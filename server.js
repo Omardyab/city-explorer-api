@@ -1,11 +1,11 @@
 const express=require('express'); // similar to import 
 const send = require('send');
 const server = express(); // put all methods and props inside express in this, you can use server to access all methods and props inside express.
-const PORT= 3010; //always P in capital, here we need to use listen and give it this port to be able to send and rec (request and responce) 
+const PORT= process.env.PORT; 
+//always P in capital, here we need to use listen and give it this port to be able to send and rec (request and responce) 
+
 // const weather=require('./assets/weather.json');
 const getPoke=require('./assets/poke.json');
-
-
 server.get('/getPokeNames',(req,res)=>{
     let pokeNames=getPoke.results.map(item=>{
         return item.name;
@@ -25,8 +25,6 @@ server.get('/getPoke',(req,res)=>{
       res.send(choosenpoke);
     })
 
-
-
 //localhost:3010/ this is the root route similar to homepage for example 
 server.get('/',(req,res)=>{
     res.send('You are in the root route now, Omar is here :) ');
@@ -40,7 +38,9 @@ server.get('*',(req,res)=>{// add a universal route as well as a status code of 
     res.status(404).send('Not found check your link again');
 })
 
-
+server.listen(PORT,()=>{
+    console.log(`I am here on Port ${PORT} `);
+})
 
 //localhost:3010/getweather
 // server.get('/getweather',(req,res)=>{
@@ -51,9 +51,6 @@ server.get('*',(req,res)=>{// add a universal route as well as a status code of 
 //     res.send('All data is here',weather)
 // })
 
-server.listen(PORT,()=>{
-    console.log(`I am here on Port ${PORT} `);
-})
 
 // const pokeData = require('./assets/poke.json');
 
