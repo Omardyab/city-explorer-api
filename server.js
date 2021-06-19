@@ -1,55 +1,92 @@
-const express=require('express'); // similar to import 
-const send = require('send');
+const express=require('express'); // npm i express similar to import 
 const server = express(); // put all methods and props inside express in this, you can use server to access all methods and props inside express.
-const PORT= process.env.PORT; 
+require('dotenv').config(); // npm i dotenv
+const send = require('send');
+const cors  =require('cors');
+// const PORT= process.env.PORT; 
+server.use(cors());
+const weatherData=require('./assets/weather.json');
+const PORT= process.env.PORT ||3010; 
+
 //always P in capital, here we need to use listen and give it this port to be able to send and rec (request and responce) 
-
-// const weather=require('./assets/weather.json');
-const getPoke=require('./assets/poke.json');
-server.get('/getPokeNames',(req,res)=>{
-    let pokeNames=getPoke.results.map(item=>{
-        return item.name;
-    })
-    console.log(pokeNames);
-     res.send(pokeNames);
-})
-//localhost:3010/getPoke?pokeName=bulbasaur you need to add parameter later not the whole route listed here 
-//pokeName is the name of parameter (you can check this in the browser from your network requests), there can be more than one parameter adn you should declare each one in separate.
-
-server.get('/getPoke',(req,res)=>{
-    let sentname=req.query.pokeName;
-    let choosenpoke=getPoke.results.find(item=>{
-        if (item.name==sentname)
-        return item;
-    })
-      res.send(choosenpoke);
-    })
-
-//localhost:3010/ this is the root route similar to homepage for example 
-server.get('/',(req,res)=>{
-    res.send('You are in the root route now, Omar is here :) ');
-})
-//localhost:3010/test if comes from front end i need to serve this using a method called get and it comes from the express itself
-server.get('/test',(req,res)=>{ // dont forget the forward slash
-    res.send('lets send simple string : hello from test route '); 
-})
-//localhost:3010/anythigng here would result the following 
-server.get('*',(req,res)=>{// add a universal route as well as a status code of 404
-    res.status(404).send('Not found check your link again');
-})
-
 server.listen(PORT,()=>{
     console.log(`I am here on Port ${PORT} `);
 })
 
-//localhost:3010/getweather
-// server.get('/getweather',(req,res)=>{
-//     let weatherdata=weather.map(item=>{
-// return item ; 
+server.get('/',(req,res)=>{
+    res.send('Home ');
+})
+//localhost:3010/test if comes from front end i need to serve this using a method called get and it comes from the express itself
+server.get('/test',(req,res)=>{ // dont forget the forward slash
+    res.send(' hello from test route, Back-end '); 
+})
+server.get('/weatherData', (req, res)=>{
+    res.send(weatherData);
+})
+
+class Forecast{
+    constructor(object){
+    this.date=object.valid_date;
+    this.description = `in general its ${object.weather.description} : highest temperature is  ${object.high_temp}, lowest temperature is ${object.low_temp}`;
+}
+}
+//localhost:3010/getweather?lat=latData&lonData=?&cityname=searchQuery
+server.get('/getweather',(req,res)=>{
+    const latData=req.query.lat;
+    const lonData=req.query.lon;
+    const searchQuery=req.query.cityname;
+    // const latData=31.95;
+    // const lonData=35.91;
+    // const searchQuery='Amman';
+    let weatherDataArr=weatherData.find(item=>{
+        if ((searchQuery.toLowerCase()==item.city_name) || (lonData== item.lon && latData==item.lat))
+    return item ; 
+    })   
+    // res.send(weatherDataArr)
+    if(weatherDataArr){
+        let weatherArr=weatherDataArr.data.map(item => {
+            return new Forecast(item);
+        })
+        res.send(weatherArr);
+            
+    }
+    else{
+        res.status(500).send('Your input does not match our forecast database, please check again :) ')
+    }
+});
+//IMPORTANT : keep this last :) 
+//localhost:3010/anythigng here would result the following 
+server.get('*',(req,res)=>{// add a universal route as well as a status code of 404
+    res.status(404).send('Not found, please check your link again');
+})
+
+
+
+
+
+//my sol of demo 
+// const PORT= 3010; 
+
+// const getPoke=require('./assets/poke.json');
+// server.get('/getPokeNames',(req,res)=>{
+//     let pokeNames=getPoke.results.map(item=>{
+//         return item.name;
 //     })
-   
-//     res.send('All data is here',weather)
+//     console.log(pokeNames);
+//      res.send(pokeNames);
 // })
+//localhost:3010/getPoke?pokeName=bulbasaur you need to add parameter later not the whole route listed here 
+//pokeName is the name of parameter (you can check this in the browser from your network requests), there can be more than one parameter adn you should declare each one in separate.
+// server.get('/getPoke',(req,res)=>{
+//     let sentname=req.query.pokeName;
+//     let choosenpoke=getPoke.results.find(item=>{
+//         if (item.name==sentname)
+//         return item;
+//     })
+//       res.send(choosenpoke);
+//     })
+
+//localhost:3010/ this is the root route similar to homepage for example 
 
 
 // const pokeData = require('./assets/poke.json');
