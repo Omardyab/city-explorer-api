@@ -1,6 +1,6 @@
-const express=require('express'); // npm i express similar to import 
+const express=require('express'); // alsi install => npm i express similar to import 
 const server = express(); // put all methods and props inside express in this, you can use server to access all methods and props inside express.
-require('dotenv').config(); // npm i dotenv
+require('dotenv').config(); //also install =>  npm i dotenv
 const send = require('send');
 const cors  =require('cors');
 // const PORT= process.env.PORT; 
@@ -31,6 +31,8 @@ class Forecast{
 }
 }
 //localhost:3010/getweather?lat=latData&lonData=?&cityname=searchQuery
+//getweather?lat=?&lon=?&cityname=?
+// try this on herouk it should work :https://class-7-city-explorer.herokuapp.com/getweather?lat=31.95&lon=35.91&cityname=amman
 server.get('/getweather',(req,res)=>{
     const latData=req.query.lat;
     const lonData=req.query.lon;
