@@ -6,7 +6,8 @@ const cors  =require('cors');
 // const PORT= process.env.PORT; 
 server.use(cors());
 const weatherData=require('./assets/weather.json');
-const PORT= process.env.PORT ||3010; 
+const PORT= process.env.PORT ||3010; //this is another way if ,env have a problem 
+
 
 //always P in capital, here we need to use listen and give it this port to be able to send and rec (request and responce) 
 server.listen(PORT,()=>{
@@ -30,26 +31,36 @@ class Forecast{
     this.description = `in general its ${object.weather.description} : highest temperature is  ${object.high_temp}, lowest temperature is ${object.low_temp}`;
 }
 }
-//localhost:3010/getweather?lat=latData&lonData=?&cityname=searchQuery
-//getweather?lat=?&lon=?&cityname=?
+//or you cna create it as function 
+// function Forecast(day){ 
+//     this.date=date.valid_date
+//     this.description=day.weather.description
+// }
+//will be coming from the user (roaa said to forget about lon and lat)
+
+//localhost:3010/weather?lat=latData&lonData=?&cityname=searchQuery
+//localhost:3010/weather?city=amman
 // try this on herouk it should work :https://class-7-city-explorer.herokuapp.com/getweather?lat=31.95&lon=35.91&cityname=amman
-server.get('/getweather',(req,res)=>{
-    const latData=req.query.lat;
-    const lonData=req.query.lon;
+server.get('/weather',(req,res)=>{
+    // const latData=req.query.lat;
+    // const lonData=req.query.lon;
     const searchQuery=req.query.cityname;
     // const latData=31.95;
     // const lonData=35.91;
     // const searchQuery='Amman';
+    // let weatherDataArr=weatherData.find(item=>{
+    //     if ((searchQuery.toLowerCase()==item.city_name) || (lonData== item.lon && latData==item.lat))
+    // return item ;
     let weatherDataArr=weatherData.find(item=>{
-        if ((searchQuery.toLowerCase()==item.city_name) || (lonData== item.lon && latData==item.lat))
-    return item ; 
+        if ((item.city_name.toLowerCase()===searchQuery.toLowerCase()))
+        return item ; 
     })   
     // res.send(weatherDataArr)
     if(weatherDataArr){
         let weatherArr=weatherDataArr.data.map(item => {
             return new Forecast(item);
         })
-        res.send(weatherArr);
+        res.status(200).send(weatherArr);
             
     }
     else{
@@ -61,10 +72,6 @@ server.get('/getweather',(req,res)=>{
 server.get('*',(req,res)=>{// add a universal route as well as a status code of 404
     res.status(404).send('Not found, please check your link again');
 })
-
-
-
-
 
 //my sol of demo 
 // const PORT= 3010; 
