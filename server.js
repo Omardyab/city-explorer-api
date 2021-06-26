@@ -3,11 +3,13 @@ const server = express(); // put all methods and props inside express in this, y
 require('dotenv').config(); //also install =>  npm i dotenv
 const send = require('send');
 const cors  =require('cors');
+const { response } = require('express');
 // const PORT= process.env.PORT; 
 server.use(cors());
 const weatherData=require('./assets/weather.json');
 const PORT= process.env.PORT ||3010; //this is another way if ,env have a problem 
-
+const axios = require('axios');
+const WEATHER_BIT_KEY= process.env.WEATHER_BIT_KEY;
 
 //always P in capital, here we need to use listen and give it this port to be able to send and rec (request and responce) 
 server.listen(PORT,()=>{
@@ -24,6 +26,33 @@ server.get('/test',(req,res)=>{ // dont forget the forward slash
 server.get('/weatherData', (req, res)=>{
     res.send(weatherData);
 })
+
+server.get('/weather', (req,res)=> {
+    const lat = req.query.lat;
+    const lon = req.query.lon;
+    if (lat && lon) {
+        const weatherBitUrl = `https://api.weatherbit.io/v2.0/forecast/daily?key=${WEATHER_BIT_KEY}&lat=${lat}&lon=${lon}`;
+        axios.get(weatherBitUrl).then(response => {
+            const responseData = response.data.data.map(obj => new Weather(obj));
+            res.json(responseData)
+        }).catch(error => {
+            res.send(error.message)
+        });
+    } else {
+        res.send('please provide the proper lat and lon')
+    }
+
+
+});
+class Weather {
+    constructor(weatherData) {
+        this.description = weatherData.weather.description;
+        this.date = weatherData.valid_date;
+
+    }
+}
+
+
 
 class Forecast{
     constructor(object){
