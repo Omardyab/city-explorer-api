@@ -22,6 +22,7 @@ const PORT = process.env.PORT || 3050;
 require("dotenv").config();
 
 
+
 // localhost:3050/
 server.get('/',home);
 
@@ -55,6 +56,58 @@ function test(req, res){
 server.listen(PORT, ()=>{
   console.log(`Listening to PORT ${PORT} o.O`);
 })
+
+// //----- lab9 ---- 
+// 'use strict';
+// const express = require('express');
+// const server = express();
+
+
+// const cors = require('cors');
+// server.use(cors()); 
+
+// const wthr = require('./weather.js');
+
+// const mv = require('./movie.js')
+
+// // localhost:3050
+// const PORT = process.env.PORT || 3050;
+// require("dotenv").config();
+
+
+// // localhost:3050/
+// server.get('/',home);
+
+// // localhost:3050/test
+// server.get('/test',test);
+
+// // localhost:3050/weatherData
+// server.get('/weatherData', wthr.weatherData);
+
+// // localhost:3050/lon-lat
+// server.get('/lon-lat', wthr.weatherLonLat);
+
+// // localhost:3050/movies?location=germany
+// server.get('/movies',mv);
+
+// // localhost:3050/searchCity?cityName=amman
+// server.get('/searchCity', wthr.weatherCityLonLat);
+
+// // localhost:3050/cityData?cityName=paris
+// server.get('/cityData', wthr.weatherForcast);
+
+// function home(req, res){
+//   res.send('Home...');
+// }
+
+// function test(req, res){
+//   res.send('hello');
+// }
+
+
+// server.listen(PORT, ()=>{
+//   console.log(`Listening to PORT ${PORT} o.O`);
+// })
 //})
 // const express=require('express'); // alsi install => npm i express similar to import 
 // const server = express(); // put all methods and props inside express in this, you can use server to access all methods and props inside express.
