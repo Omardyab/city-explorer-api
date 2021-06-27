@@ -7,7 +7,7 @@ const server = express();
 
 const axios = require('axios');
 
-const weather = require('./data/weather.json');
+const weather = require('./assets/weather.json');
 
 const cors = require('cors');
 const { response } = require('express');
